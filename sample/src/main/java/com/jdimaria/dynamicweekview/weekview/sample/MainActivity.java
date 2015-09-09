@@ -258,7 +258,8 @@ public class MainActivity extends ActionBarActivity implements DynamicWeekView.M
 
     @Override
     public void onEventClick(WeekViewEvent event, RectF eventRect) {
-        Toast.makeText(MainActivity.this, "Clicked " + event.getName(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.this, "Clicked " + getEventTitle(event.getStartTime()) + " "
+                + event.getStartTime().get(Calendar.AM_PM), Toast.LENGTH_SHORT).show();
     }
 
     @Override
