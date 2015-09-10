@@ -423,15 +423,6 @@ public class DynamicWeekView extends View {
         mWidthPerDay = getWidth() - mHeaderColumnWidth - mColumnGap * (mNumberOfVisibleDays - 1);
         mWidthPerDay = mWidthPerDay/mNumberOfVisibleDays;
 
-//        // Do not let the view go before/after the limit due to scrolling. Set the max and min limit of the scroll.
-//        if (mCurrentScrollDirection == Direction.HORIZONTAL) {
-//            if (mCurrentOrigin.x - mDistanceX > 0) mCurrentOrigin.x = 0;
-//            else if (mCurrentOrigin.x - mDistanceX < -(mHourHeight * mVisibleHours + mHeaderColumnWidth
-//                    + mHeaderColumnPadding * 2 - getWidth()))
-//                mCurrentOrigin.x = -(Math.round(mHourHeight * mVisibleHours + mHeaderColumnWidth + mHeaderColumnPadding * 2 - getWidth()));
-//            else mCurrentOrigin.x -= mDistanceX;
-//        }
-
         if (mAreDimensionsInvalid) {
             mAreDimensionsInvalid = false;
             if(mScrollToDay != null)
@@ -464,7 +455,7 @@ public class DynamicWeekView extends View {
 
         // Prepare to iterate for each day.
         Calendar day = (Calendar) mToday.clone();
-        day.add(Calendar.HOUR, 6);
+        day.add(Calendar.HOUR, (int) mStartTime);
 
         // Prepare to iterate for each hour to draw the hour lines.
         int lineCount = (int) ((getHeight() - mHeaderTextHeight - mHeaderRowPadding * 2 -
