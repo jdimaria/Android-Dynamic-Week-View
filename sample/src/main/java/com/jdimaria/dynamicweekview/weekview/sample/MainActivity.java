@@ -55,10 +55,13 @@ public class MainActivity extends ActionBarActivity implements DynamicWeekView.M
         setupDateTimeInterpreter(false);
 
         mWeekView.setTimes(6, 20);
-//        Calendar start = Calendar.getInstance();
-//        start.set(Calendar.DAY_OF_MONTH, 2);
-//        mWeekView.setStartDate(start);
+        Calendar start = Calendar.getInstance();
+        mWeekView.setStartDate(start);
 //        mWeekView.setTodayToStart();
+        Calendar end = Calendar.getInstance();
+        end.set(Calendar.DAY_OF_MONTH, 14);
+        mWeekView.setEndDate(end);
+        mWeekView.setTodayToStart();
     }
 
 

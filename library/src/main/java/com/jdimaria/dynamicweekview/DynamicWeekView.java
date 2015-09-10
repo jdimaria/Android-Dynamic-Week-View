@@ -154,7 +154,35 @@ public class DynamicWeekView extends View {
             mStickyScroller.forceFinished(true);
 
             if (mCurrentFlingDirection == Direction.HORIZONTAL){
-                mScroller.fling((int) mCurrentOrigin.x, 0, (int) (velocityX * mXScrollingSpeed), 0, Integer.MIN_VALUE, Integer.MAX_VALUE, 0, 0);
+                if (mToday != null && mStartDate != null && mEndDate != null) {
+                    long dateInMillisMin = mStartDate.getTimeInMillis() + mStartDate.getTimeZone().getOffset(mStartDate.getTimeInMillis());
+                    Log.d(getClass().getSimpleName(), "dateInMillisMin: " + dateInMillisMin);
+                    long todayInMillisMin = mToday.getTimeInMillis() + mToday.getTimeZone().getOffset(mToday.getTimeInMillis());
+                    Log.d(getClass().getSimpleName(), "todayInMillisMin: " + todayInMillisMin);
+                    int dateDifferenceMin = (int) ((dateInMillisMin - todayInMillisMin) / (1000 * 60 * 60 * 24));
+                    Log.d(getClass().getSimpleName(), "dateDifferenceMin: " + dateDifferenceMin);
+
+                    Log.d(getClass().getSimpleName(), "minValue calc: " + dateDifferenceMin * (mWidthPerDay + mColumnGap));
+
+                    int minValue = (int) (- dateDifferenceMin * (mWidthPerDay + mColumnGap));
+                    Log.d(getClass().getSimpleName(), "minValue: " + minValue);
+
+                    long dateInMillisMax = mEndDate.getTimeInMillis() + mEndDate.getTimeZone().getOffset(mEndDate.getTimeInMillis());
+                    Log.d(getClass().getSimpleName(), "dateInMillisMax: " + dateInMillisMax);
+                    long todayInMillisMax = mToday.getTimeInMillis() + mToday.getTimeZone().getOffset(mToday.getTimeInMillis());
+                    Log.d(getClass().getSimpleName(), "todayInMillisMax: " + todayInMillisMax);
+                    int dateDifferenceMax = (int) ((todayInMillisMax - dateInMillisMax) / (1000 * 60 * 60 * 24));
+                    Log.d(getClass().getSimpleName(), "dateDifferenceMax: " + dateDifferenceMax);
+
+                    Log.d(getClass().getSimpleName(), "maxValue calc: " + dateDifferenceMax * (mWidthPerDay + mColumnGap));
+
+                    int maxValue = (int) ( dateDifferenceMax * (mWidthPerDay + mColumnGap));
+                    Log.d(getClass().getSimpleName(), "maxValue: " + maxValue);
+
+                    mScroller.fling((int) mCurrentOrigin.x, 0, (int) (velocityX * mXScrollingSpeed), 0, maxValue, minValue, 0, 0);
+                }
+                else
+                    mScroller.fling((int) mCurrentOrigin.x, 0, (int) (velocityX * mXScrollingSpeed), 0, Integer.MIN_VALUE, Integer.MAX_VALUE, 0, 0);
             }
             else if (mCurrentFlingDirection == Direction.VERTICAL){
                 mScroller.fling(0, (int) mCurrentOrigin.y, 0, (int) velocityY, 0, 0, (int) -(mHourHeight * mVisibleHours + mHeaderTextHeight + mHeaderRowPadding * 2 - getHeight()), 0);
@@ -367,7 +395,9 @@ public class DynamicWeekView extends View {
         // Do not let the view go above/below the limit due to scrolling. Set the max and min limit of the scroll.
         if (mCurrentScrollDirection == Direction.VERTICAL) {
             if (mCurrentOrigin.y - mDistanceY > 0) mCurrentOrigin.y = 0;
-            else if (mCurrentOrigin.y - mDistanceY < -(mHourHeight * mVisibleHours + mHeaderTextHeight + mHeaderRowPadding * 2 - getHeight())) mCurrentOrigin.y = -(Math.round(mHourHeight * mVisibleHours + mHeaderTextHeight + mHeaderRowPadding * 2 - getHeight()));
+            else if (mCurrentOrigin.y - mDistanceY < -(mHourHeight * mVisibleHours + mHeaderTextHeight
+                    + mHeaderRowPadding * 2 - getHeight()))
+                mCurrentOrigin.y = -(Math.round(mHourHeight * mVisibleHours + mHeaderTextHeight + mHeaderRowPadding * 2 - getHeight()));
             else mCurrentOrigin.y -= mDistanceY;
         }
 
@@ -392,6 +422,15 @@ public class DynamicWeekView extends View {
         mHeaderColumnWidth = mTimeTextWidth + mHeaderColumnPadding *2;
         mWidthPerDay = getWidth() - mHeaderColumnWidth - mColumnGap * (mNumberOfVisibleDays - 1);
         mWidthPerDay = mWidthPerDay/mNumberOfVisibleDays;
+
+//        // Do not let the view go before/after the limit due to scrolling. Set the max and min limit of the scroll.
+//        if (mCurrentScrollDirection == Direction.HORIZONTAL) {
+//            if (mCurrentOrigin.x - mDistanceX > 0) mCurrentOrigin.x = 0;
+//            else if (mCurrentOrigin.x - mDistanceX < -(mHourHeight * mVisibleHours + mHeaderColumnWidth
+//                    + mHeaderColumnPadding * 2 - getWidth()))
+//                mCurrentOrigin.x = -(Math.round(mHourHeight * mVisibleHours + mHeaderColumnWidth + mHeaderColumnPadding * 2 - getWidth()));
+//            else mCurrentOrigin.x -= mDistanceX;
+//        }
 
         if (mAreDimensionsInvalid) {
             mAreDimensionsInvalid = false;
