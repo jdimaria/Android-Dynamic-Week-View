@@ -3,6 +3,7 @@ package com.jdimaria.dynamicweekview.weekview.sample;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,7 +25,7 @@ import java.util.Locale;
  * Website: http://alamkanak.github.io/
  */
 public class MainActivity extends ActionBarActivity implements DynamicWeekView.MonthChangeListener,
-        DynamicWeekView.EventClickListener, DynamicWeekView.EventLongPressListener {
+        DynamicWeekView.EventClickListener, DynamicWeekView.EventLongPressListener, DynamicWeekView.EmptyViewClickListener {
 
     private static final int TYPE_DAY_VIEW = 1;
     private static final int TYPE_THREE_DAY_VIEW = 2;
@@ -62,6 +63,8 @@ public class MainActivity extends ActionBarActivity implements DynamicWeekView.M
         end.set(Calendar.DAY_OF_MONTH, 14);
         mWeekView.setEndDate(end);
         mWeekView.setTodayToStart();
+
+        mWeekView.setEmptyViewClickListener(this);
     }
 
 
@@ -157,12 +160,12 @@ public class MainActivity extends ActionBarActivity implements DynamicWeekView.M
         Calendar startTime = Calendar.getInstance();
         startTime.set(Calendar.HOUR_OF_DAY, 3);
         startTime.set(Calendar.MINUTE, 0);
-        startTime.set(Calendar.MONTH, newMonth-1);
+        startTime.set(Calendar.MONTH, newMonth - 1);
         startTime.set(Calendar.YEAR, newYear);
         Calendar endTime = (Calendar) startTime.clone();
         endTime.add(Calendar.HOUR, 1);
-        endTime.set(Calendar.MONTH, newMonth-1);
-        WeekViewEvent event = new WeekViewEvent(1, getEventTitle(startTime), startTime, endTime);
+        endTime.set(Calendar.MONTH, newMonth - 1);
+        WeekViewEvent event = new WeekViewEvent("1", getEventTitle(startTime), startTime, endTime);
         event.setColor(getResources().getColor(R.color.event_color_01));
         events.add(event);
 
@@ -175,7 +178,7 @@ public class MainActivity extends ActionBarActivity implements DynamicWeekView.M
         endTime.set(Calendar.HOUR_OF_DAY, 4);
         endTime.set(Calendar.MINUTE, 30);
         endTime.set(Calendar.MONTH, newMonth-1);
-        event = new WeekViewEvent(10, getEventTitle(startTime), startTime, endTime);
+        event = new WeekViewEvent("10", getEventTitle(startTime), startTime, endTime);
         event.setColor(getResources().getColor(R.color.event_color_02));
         events.add(event);
 
@@ -187,7 +190,7 @@ public class MainActivity extends ActionBarActivity implements DynamicWeekView.M
         endTime = (Calendar) startTime.clone();
         endTime.set(Calendar.HOUR_OF_DAY, 5);
         endTime.set(Calendar.MINUTE, 0);
-        event = new WeekViewEvent(10, getEventTitle(startTime), startTime, endTime);
+        event = new WeekViewEvent("10", getEventTitle(startTime), startTime, endTime);
         event.setColor(getResources().getColor(R.color.event_color_03));
         events.add(event);
 
@@ -198,8 +201,8 @@ public class MainActivity extends ActionBarActivity implements DynamicWeekView.M
         startTime.set(Calendar.YEAR, newYear);
         endTime = (Calendar) startTime.clone();
         endTime.add(Calendar.HOUR_OF_DAY, 2);
-        endTime.set(Calendar.MONTH, newMonth-1);
-        event = new WeekViewEvent(2, getEventTitle(startTime), startTime, endTime);
+        endTime.set(Calendar.MONTH, newMonth - 1);
+        event = new WeekViewEvent("2", getEventTitle(startTime), startTime, endTime);
         event.setColor(getResources().getColor(R.color.event_color_02));
         events.add(event);
 
@@ -212,7 +215,7 @@ public class MainActivity extends ActionBarActivity implements DynamicWeekView.M
         endTime = (Calendar) startTime.clone();
         endTime.add(Calendar.HOUR_OF_DAY, 3);
         endTime.set(Calendar.MONTH, newMonth - 1);
-        event = new WeekViewEvent(3, getEventTitle(startTime), startTime, endTime);
+        event = new WeekViewEvent("3", getEventTitle(startTime), startTime, endTime);
         event.setColor(getResources().getColor(R.color.event_color_03));
         events.add(event);
 
@@ -224,7 +227,7 @@ public class MainActivity extends ActionBarActivity implements DynamicWeekView.M
         startTime.set(Calendar.YEAR, newYear);
         endTime = (Calendar) startTime.clone();
         endTime.add(Calendar.HOUR_OF_DAY, 3);
-        event = new WeekViewEvent(4, getEventTitle(startTime), startTime, endTime);
+        event = new WeekViewEvent("4", getEventTitle(startTime), startTime, endTime);
         event.setColor(getResources().getColor(R.color.event_color_04));
         events.add(event);
 
@@ -236,7 +239,7 @@ public class MainActivity extends ActionBarActivity implements DynamicWeekView.M
         startTime.set(Calendar.YEAR, newYear);
         endTime = (Calendar) startTime.clone();
         endTime.add(Calendar.HOUR_OF_DAY, 3);
-        event = new WeekViewEvent(5, getEventTitle(startTime), startTime, endTime);
+        event = new WeekViewEvent("5", getEventTitle(startTime), startTime, endTime);
         event.setColor(getResources().getColor(R.color.event_color_01));
         events.add(event);
 
@@ -248,7 +251,7 @@ public class MainActivity extends ActionBarActivity implements DynamicWeekView.M
         startTime.set(Calendar.YEAR, newYear);
         endTime = (Calendar) startTime.clone();
         endTime.add(Calendar.HOUR_OF_DAY, 3);
-        event = new WeekViewEvent(5, getEventTitle(startTime), startTime, endTime);
+        event = new WeekViewEvent("5", getEventTitle(startTime), startTime, endTime);
         event.setColor(getResources().getColor(R.color.event_color_02));
         events.add(event);
 
@@ -268,5 +271,11 @@ public class MainActivity extends ActionBarActivity implements DynamicWeekView.M
     @Override
     public void onEventLongPress(WeekViewEvent event, RectF eventRect) {
         Toast.makeText(MainActivity.this, "Long pressed event: " + event.getName(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onEmptyViewClicked(Calendar time) {
+        Log.d("MainActivity", "time.getHourOfDay: " + time.get(Calendar.HOUR_OF_DAY));
+        Log.d("MainActivity", "time.getHour: " + time.get(Calendar.HOUR));
     }
 }

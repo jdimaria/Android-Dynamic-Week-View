@@ -211,6 +211,7 @@ public class DynamicWeekView extends View {
             // If the tap was on in an empty space, then trigger the callback.
             if (mEmptyViewClickListener != null && e.getX() > mHeaderColumnWidth && e.getY() > (mHeaderTextHeight + mHeaderRowPadding * 2 + mHeaderMarginBottom)) {
                 Calendar selectedTime = getTimeFromPoint(e.getX(), e.getY());
+                Log.d("DynamicWeekView", "selectedTime hour: " + selectedTime.get(Calendar.HOUR));
                 if (selectedTime != null) {
                     playSoundEffect(SoundEffectConstants.CLICK);
                     mEmptyViewClickListener.onEmptyViewClicked(selectedTime);
@@ -562,12 +563,16 @@ public class DynamicWeekView extends View {
                     && x>start && x<startPixel + mWidthPerDay){
                 Calendar day = (Calendar) mToday.clone();
                 day.add(Calendar.DATE, dayNumber - 1);
-                float pixelsFromZero = y - mCurrentOrigin.y - mHeaderTextHeight
-                        - mHeaderRowPadding * 2 - mTimeTextHeight/2 - mHeaderMarginBottom;
+                float pixelsFromZero = (y - mCurrentOrigin.y - mHeaderTextHeight
+                        - mHeaderRowPadding * 2 - mTimeTextHeight / 2 - mHeaderMarginBottom);
                 int hour = (int)(pixelsFromZero / mHourHeight);
+                int hourOffset = (int) (mStartTime);
+                Log.d("DynamicWeekView", "hour: " + hour);
+                Log.d("DynamicWeekView", "hourOffset: " + hourOffset);
                 int minute = (int) (60 * (pixelsFromZero - hour * mHourHeight) / mHourHeight);
-                day.add(Calendar.HOUR, hour);
+                day.set(Calendar.HOUR_OF_DAY, (hour + hourOffset));
                 day.set(Calendar.MINUTE, minute);
+                Log.d("DynamicWeekView", "day.getHour: " + day.get(Calendar.HOUR));
                 return day;
             }
             startPixel += mWidthPerDay + mColumnGap;
